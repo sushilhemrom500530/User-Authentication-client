@@ -5,8 +5,8 @@ export default function MainLayout() {
 
   return (
     <div className="text-xl font-medium text-center">
-           {/* <Signin /> */}
-           <Signup />
+           <Signin />
+           {/* <Signup /> */}
     </div>
   )
 }

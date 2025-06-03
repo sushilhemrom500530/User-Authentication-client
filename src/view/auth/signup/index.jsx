@@ -3,15 +3,40 @@ import bg_image from "../../../assets/home banner.jpg";
 import {Input, TagInput} from "../../../components/reuseable/input";
 import { useForm } from "react-hook-form";
 import { useState,useEffect } from "react";
+import useApi from "../../../hooks/use-api";
 
 export default function Signup() {
   const {control, register, handleSubmit,formState: { errors } } = useForm();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [serverErrors, setServerErrors] = useState({});
 
-  const onSubmit = (data) => {
-    console.log(data)
+const onSubmit = async (data) => {
+    try {
+      const response = await useApi.post("/auth/signup", data);
+      console.log("User registered:", response.data);
+      alert("User created successfully");
+      setErrorMessage(""); 
+      setServerErrors({});
+    } catch (error) {
+      console.log(error.response?.data?.message);
+
+      const message = error.response?.data?.message;
+      if (message) {
+        setErrorMessage(message); 
+      }
+
+      if (error.response?.data?.errors) {
+        const errorsObj = {};
+        error.response.data.errors.forEach((err) => {
+          const field = err.path[0]; 
+          errorsObj[field] = err.message;
+        });
+        setServerErrors(errorsObj); 
+      }
+    }
   };
 
-
+console.log("server error:", serverErrors)
 
   return (
     <div
@@ -49,14 +74,15 @@ export default function Signup() {
               register={register}
               errors={errors}
             />
-            <TagInput
+           <TagInput
               label="Shops"
               name="shops"
-              placeholder="Enter three shops"
+              placeholder="Enter your shops"
               control={control}
               errors={errors}
-              required={true}
+              serverError={serverErrors.shops}
             />
+              {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
 
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 cursor-pointer" htmlFor="remember">

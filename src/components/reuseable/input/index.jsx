@@ -37,15 +37,23 @@ export const Input = ({
                     `}
                 {...register(name, { required: required })}
             />
-            <div className="error-text flex items-center justify-end relative text-sm text-red-500">
-                {
-                    errors && errors[name] && <span>{label || 'this'} is required
-                        <span>
-                            <img className="w-4 h-4 absolute -top-7 right-5" src="https://i.postimg.cc/rwxT9jXz/exclamation-mark.webp" alt="error-logo" />
-                        </span>
+           <div className="error-text flex items-center justify-end relative text-sm text-red-500">
+              {
+                errors && errors[name] && (
+                  <span>
+                    {errors[name].message || `${label || 'This field'} is required`}
+                    <span>
+                      <img
+                        className="w-4 h-4 absolute -top-7 right-5"
+                        src="https://i.postimg.cc/rwxT9jXz/exclamation-mark.webp"
+                        alt="error-logo"
+                      />
                     </span>
-                }
+                  </span>
+                )
+              }
             </div>
+
         </div>
     );
 };
@@ -59,7 +67,10 @@ export const TagInput = ({
   control,
   errors,
   required = true,
+  serverError = null, // optional server-side error
 }) => {
+  const hasError = !!errors?.[name] || !!serverError;
+
   return (
     <div className="w-full">
       {label && <label className="text-base block mb-1">{label}</label>}
@@ -67,7 +78,7 @@ export const TagInput = ({
       <Controller
         name={name}
         control={control}
-        rules={{ required }}
+        rules={{ required: { value: required, message: `${label || 'This field'} is required` } }}
         render={({ field }) => (
           <TagsInput
             {...field}
@@ -83,9 +94,9 @@ export const TagInput = ({
         )}
       />
 
-      {errors && errors[name] && (
+      {hasError && (
         <div className="text-sm text-red-500 mt-1 relative text-end">
-          {label || 'This field'} is required
+          {errors?.[name]?.message || serverError}
           <img
             className="w-4 h-4 absolute -top-8 right-5"
             src="https://i.postimg.cc/rwxT9jXz/exclamation-mark.webp"
