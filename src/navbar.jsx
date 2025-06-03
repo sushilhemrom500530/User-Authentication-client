@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import {NavLink } from "react-router-dom";
 import profile from "./assets/profile.jpg";
 import { useAuth } from "./hooks/use-auth";
 import { useUsers } from "./hooks/use-user";
@@ -8,7 +8,8 @@ import useApi from "./hooks/use-api";
 export default function Navbar() {
   const { user } = useAuth();
   const { users } = useUsers();
-
+  const hostname = window.location.hostname;
+  const shopname = hostname.split(".")[0];
   const userInfo = users?.find((u) => u._id === user?.id);
 
   const handleLogout = async()=>{
@@ -17,10 +18,13 @@ export default function Navbar() {
      window.location.href = "/auth/login";
   }
 
+
   return (
     <header className="lg:sticky top-0 w-full z-10 transition-all duration-500 bg-gray-800 text-white backdrop-blur-md bg-opacity-75  py-3">
       <div className="flex items-center justify-between px-4">
-        <h1 className="text-3xl font-black uppercase">{userInfo?.username?.slice(0,1) || "Logo"}</h1>
+        
+        <h1 className="text-3xl font-black uppercase">{userInfo?.username?.slice(0,1) || shopname?.slice(0,1)|| "logo"}</h1>
+        
         <div className="relative group font-semibold capitalize text-lg">
           <div className="flex items-center justify-start gap-2 cursor-pointer group relative">
             <div className="w-12 h-12 rounded-full cursor-pointer">
