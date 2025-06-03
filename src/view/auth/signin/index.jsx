@@ -1,4 +1,4 @@
-import { Link} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import bg_image from "../../../assets/home banner.jpg";
 import { Input } from "../../../components/reuseable/input";
 import { useForm } from "react-hook-form";
@@ -11,31 +11,32 @@ export default function Signin() {
     setError,
     formState: { errors },
   } = useForm();
+  const navigate = useNavigate();
 
-
- const onSubmit = async (data) => {
-  try {
-    const response = await useApi.post("/auth/signin", data);
-    // console.log("User signin:", response.data);
-    alert("User logged in successfully");
-  } catch (error) {
-    const message = error.response?.data?.message;
-    if (message?.includes("not found")) {
-      setError("username", {
-        type: "server",
-        message: "User not found",
-      });
-    } else if (message?.includes("Incorrect password")) {
-      setError("password", {
-        type: "server",
-        message: "Incorrect password",
-      });
-    } else {
-      // fallback: show general form-level error
-      alert(message || "Something went wrong");
+  const onSubmit = async (data) => {
+    try {
+      const response = await useApi.post("/auth/signin", data);
+      // console.log("User signin:", response.data);
+      alert("User logged in successfully");
+      navigate("/");
+    } catch (error) {
+      const message = error.response?.data?.message;
+      if (message?.includes("not found")) {
+        setError("username", {
+          type: "server",
+          message: "User not found",
+        });
+      } else if (message?.includes("Incorrect password")) {
+        setError("password", {
+          type: "server",
+          message: "Incorrect password",
+        });
+      } else {
+        // fallback: show general form-level error
+        alert(message || "Something went wrong");
+      }
     }
-  }
-};
+  };
 
   return (
     <div

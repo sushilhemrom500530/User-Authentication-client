@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import bg_image from "../../../assets/home banner.jpg";
 import {Input, TagInput} from "../../../components/reuseable/input";
 import { useForm } from "react-hook-form";
@@ -9,6 +9,7 @@ export default function Signup() {
   const {control, register, handleSubmit,formState: { errors } } = useForm();
   const [errorMessage, setErrorMessage] = useState("");
   const [serverErrors, setServerErrors] = useState({});
+  const navigate = useNavigate();
 
 const onSubmit = async (data) => {
     try {
@@ -17,6 +18,7 @@ const onSubmit = async (data) => {
       alert("User created successfully");
       setErrorMessage(""); 
       setServerErrors({});
+      navigate('/auth/login')
     } catch (error) {
       console.log(error.response?.data?.message);
 
@@ -113,7 +115,7 @@ console.log("server error:", serverErrors)
           <p className="px-6 text-sm text-center text-gray-400 mt-3">
             Already have an account?{" "}
             <Link
-              to="/auth/signin"
+              to="/auth/login"
               className="hover:underline hover:text-[#5b78f6] text-gray-300"
             >
               Sign in
